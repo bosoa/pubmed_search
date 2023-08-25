@@ -1,3 +1,8 @@
+# project: pubmed_search
+# file: main.py
+# auth: bosoagalaxy@gmail.com
+# desc: search pubmed with specific topic and generate wordcloud
+
 import requests
 from bs4 import BeautifulSoup
 from wordcloud import WordCloud
