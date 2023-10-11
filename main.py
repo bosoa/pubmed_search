@@ -11,9 +11,12 @@ import matplotlib.pyplot as plt
 def find_abstract(search_link):
     response = requests.get(search_link)
     soup = BeautifulSoup(response.text, 'html.parser')
+    abstract = None
 
     abstract_tag = soup.find('div', class_ = 'abstract-content selected')
-    abstract = abstract_tag.get_text()
+    print(abstract_tag)
+    if (abstract_tag != None):
+        abstract = abstract_tag.get_text()
 
     return abstract
 
@@ -30,6 +33,7 @@ def search_pubmed(keyword, max_results=10):
 
         for result in soup.find_all('article', class_='full-docsum'):
             if len(results) >= max_results:
+                print(len(results))
                 break
 
             title_tag = result.find('a', class_='docsum-title')
@@ -40,11 +44,13 @@ def search_pubmed(keyword, max_results=10):
             abstract = abstract_tag.get_text() if abstract_tag else "N/A"
 
             link_tag = result.find('span', class_='docsum-pmid')
-            link = 'http://www.ncbi.nlm.nih.gov/pubmed/' + link_tag.get_text() +'/'
-
+            #link = 'http://www.ncbi.nlm.nih.gov/pubmed/' + link_tag.get_text() +'/'
+            link = 'https://pubmed.ncbi.nlm.nih.gov/' + link_tag.get_text() +'/'
+            print(link)
             abstract_whole = find_abstract(link)
 
-            results.append({'title': title, 'abstract': abstract_whole, 'link': link})
+            if (abstract_whole != None):
+                results.append({'title': title, 'abstract': abstract_whole, 'link': link})
 
 
         return results
