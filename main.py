@@ -1,11 +1,26 @@
 # project: pubmed_search
 # file: main.py
 # auth: bosoagalaxy@gmail.com
-# desc: search pubmed with specific topic and generate wordcloud
+# desc: search pubmed with specific topic and generate wordcloud and sentiment analysis
 
 import requests
 from bs4 import BeautifulSoup
 from wordcloud import WordCloud
+import matplotlib.pyplot as plt
+
+import nltk
+import ssl
+'''
+try:
+    _create_unverified_https_context = ssl._create_unverified_context
+except AttributeError:
+    pass
+else:
+    ssl._create_default_https_context = _create_unverified_https_context
+
+nltk.download("vader_lexicon")
+'''
+from nltk.sentiment import SentimentIntensityAnalyzer
 import matplotlib.pyplot as plt
 
 def find_abstract(search_link):
@@ -80,3 +95,38 @@ if __name__ == "__main__":
     plt.imshow(wordcloud, interpolation='bilinear')
     plt.axis('off')
     plt.show()
+
+
+
+    # Create a SentimentIntensityAnalyzer
+    sid = SentimentIntensityAnalyzer()
+
+    # Example new text input
+    new_text = text
+
+    # Analyze sentiment of the new text
+    sentiment_scores = sid.polarity_scores(new_text)
+
+    # Display sentiment scores
+    print("Sentiment Scores:", sentiment_scores)
+
+    # Determine overall sentiment label
+    if sentiment_scores['compound'] >= 0.05:
+        sentiment_label = 'Positive'
+    elif sentiment_scores['compound'] <= -0.05:
+        sentiment_label = 'Negative'
+    else:
+        sentiment_label = 'Neutral'
+
+    print("Overall Sentiment:", sentiment_label)
+
+    # Plot the sentiment scores
+    labels = ['Negative', 'Neutral', 'Positive']
+    values = [sentiment_scores['neg'], sentiment_scores['neu'], sentiment_scores['pos']]
+
+    plt.bar(labels, values, color=['red', 'gray', 'green'])
+    plt.title('Sentiment Analysis')
+    plt.xlabel('Sentiment')
+    plt.ylabel('Score')
+    plt.show()
+
